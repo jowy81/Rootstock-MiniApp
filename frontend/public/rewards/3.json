@@ -1,0 +1,19 @@
+{
+    "name": "Refresco Gratis",
+    "description": "Canjea este NFT por un refresco gratis en nuestro local",
+    "image": "/rewards/refresco.png",
+    "attributes": [
+        {
+            "trait_type": "Tipo",
+            "value": "Bebida"
+        },
+        {
+            "trait_type": "Producto",
+            "value": "Refresco"
+        },
+        {
+            "trait_type": "Categoría",
+            "value": "Frío"
+        }
+    ]
+}

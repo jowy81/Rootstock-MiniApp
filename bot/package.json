@@ -1,0 +1,23 @@
+{
+    "name": "rtmcrp-bot",
+    "version": "1.0.0",
+    "description": "Telegram Bot for Rootstock Telegram Mini-App Commerce Rewards Platform",
+    "main": "dist/bot.js",
+    "scripts": {
+        "dev": "ts-node-dev --respawn --transpile-only src/bot.ts",
+        "build": "tsc",
+        "start": "node dist/bot.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "telegraf": "^4.15.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.9.0",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.2.2"
+    }
+}

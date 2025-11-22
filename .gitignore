@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+*/dist/
+build/
+*/build/
+
+# Environment variables
+.env
+*/.env
+!.env.example
+!*/.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Database
+*.sqlite
+*.db
+
+# Hardhat
+cache/
+artifacts/
+typechain-types/
+
+# Documentation (private)
+docs/
+
+# Temporary files
+*.tmp
+.temp/

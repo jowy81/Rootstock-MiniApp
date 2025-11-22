@@ -1,0 +1,19 @@
+{
+    "name": "Magdalena Gratis",
+    "description": "Canjea este NFT por una magdalena gratis en nuestro local",
+    "image": "ipfs://QmUtLAxx8cjXT1U6tFaTTiC18ZPebiPqy8LBmEgKuyps4m/magdalena.png",
+    "attributes": [
+        {
+            "trait_type": "Tipo",
+            "value": "Panadería"
+        },
+        {
+            "trait_type": "Producto",
+            "value": "Magdalena"
+        },
+        {
+            "trait_type": "Categoría",
+            "value": "Dulce"
+        }
+    ]
+}

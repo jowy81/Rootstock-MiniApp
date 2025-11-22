@@ -1,0 +1,19 @@
+{
+    "name": "Tostado de Queso Gratis",
+    "description": "Canjea este NFT por un tostado de queso gratis en nuestro local",
+    "image": "/rewards/tostado.png",
+    "attributes": [
+        {
+            "trait_type": "Tipo",
+            "value": "Comida"
+        },
+        {
+            "trait_type": "Producto",
+            "value": "Tostado de Queso"
+        },
+        {
+            "trait_type": "Categoría",
+            "value": "Salado"
+        }
+    ]
+}

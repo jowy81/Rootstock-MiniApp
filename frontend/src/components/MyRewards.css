@@ -1,0 +1,266 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s ease-out;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 24px;
+    max-height: calc(85vh - 80px);
+    overflow-y: auto;
+}
+
+/* Claim Section */
+.claim-section {
+    margin-bottom: 32px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.claim-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #fff;
+}
+
+.claim-hint {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.claim-input-group {
+    display: flex;
+    gap: 12px;
+}
+
+.claim-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.claim-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.claim-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.claim-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.claim-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.message {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.message.success {
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #4ade80;
+}
+
+.message.error {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+/* NFTs Section */
+.nfts-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    color: #fff;
+}
+
+.loading-text,
+.empty-text {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
+.nfts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.nft-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.nft-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.nft-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.nft-info {
+    padding: 16px;
+}
+
+.nft-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+.nft-description {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+}
+
+.nft-id {
+    display: inline-block;
+    padding: 4px 8px;
+    background: rgba(102, 126, 234, 0.2);
+    border-radius: 4px;
+    font-size: 11px;
+    color: #667eea;
+    font-family: 'Courier New', monospace;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Scrollbar */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.7);
+}
