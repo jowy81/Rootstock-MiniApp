@@ -45,3 +45,7 @@ docs/
 # Temporary files
 *.tmp
 .temp/
+
+# Verification files
+CONTRACT_VERIFICATION.md
+contracts/CampaignNFT_flat.sol

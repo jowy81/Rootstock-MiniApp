@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { CONTRACT_CONFIG } from '../config/contractConfig';
-import type { NFT, NFTMetadata } from '../types/nft.types';
 import './MyRewards.css';
+import { CONTRACT_CONFIG, REWARD_NAMES } from '../config/contractConfig';
 
 interface MyRewardsProps {
     onClose: () => void;
@@ -11,51 +10,39 @@ interface MyRewardsProps {
 
 const MyRewards = ({ onClose, userAddress }: MyRewardsProps) => {
     const [claimCode, setClaimCode] = useState('');
-    const [userNFTs, setUserNFTs] = useState<NFT[]>([]);
-    const [loading, setLoading] = useState(false);
     const [claiming, setClaiming] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [message, setMessage] = useState<{ type: string, text: string } | null>(null);
+    const [ownedNFTs, setOwnedNFTs] = useState<number[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        loadUserNFTs();
+        loadNFTs();
     }, [userAddress]);
 
-    const loadUserNFTs = async () => {
-        setLoading(true);
+    const loadNFTs = async () => {
         try {
             const provider = new ethers.JsonRpcProvider(CONTRACT_CONFIG.NETWORK.rpcUrl);
-            const contract = new ethers.Contract(
+            const nftContract = new ethers.Contract(
                 CONTRACT_CONFIG.CAMPAIGN_NFT.address,
                 CONTRACT_CONFIG.CAMPAIGN_NFT.abi,
                 provider
             );
 
-            const nfts: NFT[] = [];
+            const balance = await nftContract.balanceOf(userAddress);
+            const owned: number[] = [];
 
-            // Check each of the 5 NFTs
-            for (let tokenId = 1; tokenId <= CONTRACT_CONFIG.REWARDS.TOTAL_NFTS; tokenId++) {
+            for (let i = 1; i <= CONTRACT_CONFIG.REWARDS.TOTAL_NFTS; i++) {
                 try {
-                    const owner = await contract.ownerOf(tokenId);
+                    const owner = await nftContract.ownerOf(i);
                     if (owner.toLowerCase() === userAddress.toLowerCase()) {
-                        // Fetch metadata
-                        const metadataUrl = `/rewards/${tokenId}.json`;
-                        const response = await fetch(metadataUrl);
-                        const metadata: NFTMetadata = await response.json();
-
-                        nfts.push({
-                            tokenId,
-                            owner,
-                            tokenURI: metadataUrl,
-                            metadata
-                        });
+                        owned.push(i);
                     }
-                } catch (error) {
-                    // NFT doesn't exist or not owned by user
-                    console.log(`NFT ${tokenId} not owned by user`);
+                } catch (e) {
+                    // NFT doesn't exist or is burned
                 }
             }
 
-            setUserNFTs(nfts);
+            setOwnedNFTs(owned);
         } catch (error) {
             console.error('Error loading NFTs:', error);
         } finally {
@@ -65,7 +52,7 @@ const MyRewards = ({ onClose, userAddress }: MyRewardsProps) => {
 
     const handleClaim = async () => {
         if (!claimCode.trim()) {
-            setMessage({ type: 'error', text: 'Por favor ingresa un código' });
+            setMessage({ type: 'error', text: 'Please enter a claim code' });
             return;
         }
 
@@ -77,12 +64,12 @@ const MyRewards = ({ onClose, userAddress }: MyRewardsProps) => {
             const validateRes = await fetch('http://localhost:3000/api/claim/validate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: claimCode })
+                body: JSON.stringify({ code: claimCode.trim(), userAddress })
             });
             const validation = await validateRes.json();
 
             if (!validation.valid) {
-                setMessage({ type: 'error', text: validation.message || 'Código inválido' });
+                setMessage({ type: 'error', text: validation.error || 'Invalid claim code' });
                 setClaiming(false);
                 return;
             }
@@ -91,27 +78,26 @@ const MyRewards = ({ onClose, userAddress }: MyRewardsProps) => {
             const executeRes = await fetch('http://localhost:3000/api/claim/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: claimCode, userAddress })
+                body: JSON.stringify({ code: claimCode.trim(), userAddress })
             });
             const result = await executeRes.json();
 
             if (result.success) {
                 setMessage({
                     type: 'success',
-                    text: `¡NFT #${result.nftId} reclamado! Recibiste: NFT, 0.001 tRBTC y 2.5 RIF`
+                    text: `✓ Reward claimed! You received NFT #${result.nftId}, 100 RIF, and rBTC for gas fees`
                 });
                 setClaimCode('');
-                // Reload NFTs and balances
                 setTimeout(() => {
-                    loadUserNFTs();
-                    window.location.reload(); // Reload to update balances
+                    loadNFTs();
+                    window.location.reload();
                 }, 2000);
             } else {
-                setMessage({ type: 'error', text: result.error || 'Error al reclamar' });
+                setMessage({ type: 'error', text: result.error || 'Failed to claim reward' });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Claim error:', error);
-            setMessage({ type: 'error', text: 'Error al conectar con el servidor' });
+            setMessage({ type: 'error', text: `Failed to execute claim: ${error.message}` });
         } finally {
             setClaiming(false);
         }
@@ -121,59 +107,56 @@ const MyRewards = ({ onClose, userAddress }: MyRewardsProps) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>Mis Recompensas</h2>
+                    <h2>My Rewards</h2>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
 
                 <div className="modal-body">
-                    {/* Claim Section */}
                     <div className="claim-section">
-                        <h3>Reclamar Recompensa</h3>
-                        <p className="claim-hint">Ingresa el código de tu recompensa</p>
-                        <div className="claim-input-group">
-                            <input
-                                type="text"
-                                placeholder="Ej: GIFT01"
-                                value={claimCode}
-                                onChange={(e) => setClaimCode(e.target.value.toUpperCase())}
-                                className="claim-input"
-                            />
-                            <button
-                                className="claim-btn"
-                                onClick={handleClaim}
-                                disabled={claiming || !claimCode.trim()}
-                            >
-                                {claiming ? 'Reclamando...' : 'Reclamar'}
-                            </button>
-                        </div>
+                        <h3>Claim Reward</h3>
+                        <p className="claim-hint">Enter your reward code</p>
+                        <input
+                            type="text"
+                            placeholder="e.g., GIFT01"
+                            value={claimCode}
+                            onChange={(e) => setClaimCode(e.target.value.toUpperCase())}
+                            className="claim-input"
+                            disabled={claiming}
+                        />
+                        <button
+                            className="claim-btn"
+                            onClick={handleClaim}
+                            disabled={claiming || !claimCode.trim()}
+                        >
+                            {claiming ? 'Claiming...' : 'Claim'}
+                        </button>
+
                         {message && (
-                            <div className={`message ${message.type}`}>
+                            <div className={`message ${message.type}`} style={{
+                                padding: '12px',
+                                marginTop: '16px',
+                                borderRadius: '8px',
+                                backgroundColor: message.type === 'success' ? '#d4edda' : '#f8d7da',
+                                color: message.type === 'success' ? '#155724' : '#721c24',
+                                textAlign: 'center'
+                            }}>
                                 {message.text}
                             </div>
                         )}
                     </div>
 
-                    {/* User NFTs Section */}
                     <div className="nfts-section">
-                        <h3>Mis NFTs ({userNFTs.length})</h3>
+                        <h3>My NFTs ({ownedNFTs.length})</h3>
                         {loading ? (
-                            <p className="loading-text">Cargando NFTs...</p>
-                        ) : userNFTs.length === 0 ? (
-                            <p className="empty-text">No tienes NFTs aún. ¡Reclama tu primera recompensa!</p>
+                            <p className="loading-text">Loading...</p>
+                        ) : ownedNFTs.length === 0 ? (
+                            <p className="empty-text">You don't have any NFTs yet. Claim your first reward!</p>
                         ) : (
                             <div className="nfts-grid">
-                                {userNFTs.map((nft) => (
-                                    <div key={nft.tokenId} className="nft-card">
-                                        <img
-                                            src={nft.metadata?.image}
-                                            alt={nft.metadata?.name}
-                                            className="nft-image"
-                                        />
-                                        <div className="nft-info">
-                                            <h4>{nft.metadata?.name}</h4>
-                                            <p className="nft-description">{nft.metadata?.description}</p>
-                                            <span className="nft-id">Token ID: {nft.tokenId}</span>
-                                        </div>
+                                {ownedNFTs.map((nftId) => (
+                                    <div key={nftId} className="nft-card">
+                                        <div className="nft-id">#{nftId}</div>
+                                        <div className="nft-name">{REWARD_NAMES[nftId as keyof typeof REWARD_NAMES]}</div>
                                     </div>
                                 ))}
                             </div>

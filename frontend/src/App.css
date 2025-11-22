@@ -77,8 +77,12 @@ body {
   border-color: transparent;
 }
 
-.app-footer {
-  padding: 20px 0;
+.wallet-card {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+  border: 1px solid var(--button-border);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
   max-width: 400px;
   margin-bottom: 25px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -126,6 +130,33 @@ body {
   transition: color 0.2s;
   line-height: 0;
 }
+
+.copy-btn:hover {
+  color: #fff;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+.balance-item {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.token-amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.token-symbol {
+  font-size: 0.8rem;
+  color: #888;
 }
 
 .toggle-container {
@@ -177,16 +208,4 @@ body {
   justify-content: center;
   align-items: center;
   margin-top: auto;
-}
-
-/* Wallet card */
-.wallet-card {
-  background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-  border: 1px solid var(--button-border);
-  border-radius: 16px;
-  padding: 20px;
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }

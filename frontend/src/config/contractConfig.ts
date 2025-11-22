@@ -1,6 +1,6 @@
 export const CONTRACT_CONFIG = {
     CAMPAIGN_NFT: {
-        address: '0x74d5D5e304aC227CFEaEC50b4B2959A5be37767d',
+        address: '0x74d5d5e304ac227cfeaec50b4b2959a5be37767d',
         abi: [
             'function mint(address to, uint256 tokenId) public',
             'function burn(uint256 tokenId) public',
@@ -36,7 +36,7 @@ export const CONTRACT_CONFIG = {
         ],
     },
     REWARDS: {
-        RBTC_AMOUNT: '3',
+        RBTC_AMOUNT: '0.000036', // ~$3 USD
         RIF_CLAIM_AMOUNT: '100',
         TOTAL_NFTS: 5,
     }

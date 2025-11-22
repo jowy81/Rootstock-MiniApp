@@ -1,11 +1,11 @@
 import { ethers } from 'ethers';
 import { getClaimCode, markAsClaimed } from '../data/claimCodes';
 
-const RPC_URL = process.env.ROOTSTOCK_RPC_URL || 'https://public-node.testnet.rsk.co';
+const RPC_URL = process.env.ROOTSTOCK_RPC_URL || 'https://public-node.rsk.co';
 
-// Contract addresses
-const NFT_CONTRACT = '0x01dB7E6AF3e890572a48423798c88cDe76d542AF';
-const RIF_TOKEN = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe';
+// Mainnet Contract addresses - using lowercase to avoid checksum validation errors
+const NFT_CONTRACT = '0x74d5d5e304ac227cfeaec50b4b2959a5be37767d';
+const RIF_TOKEN = '0x2acc95758f8b5f583470ba265eb685a8f45fc9d5';
 
 // ABIs
 const NFT_ABI = [
@@ -23,11 +23,11 @@ export async function validateClaimCode(code: string) {
     const claim = getClaimCode(code);
 
     if (!claim) {
-        return { valid: false, message: 'Código inválido' };
+        return { valid: false, message: 'Invalid code' };
     }
 
     if (claim.claimed) {
-        return { valid: false, message: 'Código ya reclamado' };
+        return { valid: false, message: 'Code already claimed' };
     }
 
     return { valid: true, nftId: claim.nftTokenId };
@@ -62,19 +62,19 @@ export async function executeClaim(code: string, userAddress: string) {
         await nftTx.wait();
         txHashes.nft = nftTx.hash;
 
-        // 3. Transfer tRBTC (0.001)
+        // 3. Transfer rBTC ($3 USD at BTC=$84,000 = 0.0000357 BTC)
         const rbtcTx = await merchantWallet.sendTransaction({
             to: userAddress,
-            value: ethers.parseEther('0.001')
+            value: ethers.parseEther('0.000036') // ~$3 USD
         });
         await rbtcTx.wait();
         txHashes.rbtc = rbtcTx.hash;
 
-        // 4. Transfer RIF (2.5)
+        // 4. Transfer RIF (100 tokens)
         const rifContract = new ethers.Contract(RIF_TOKEN, ERC20_ABI, merchantWallet);
         const rifTx = await rifContract.transfer(
             userAddress,
-            ethers.parseEther('2.5')
+            ethers.parseEther('100')
         );
         await rifTx.wait();
         txHashes.rif = rifTx.hash;
@@ -107,7 +107,7 @@ export async function burnNFT(userAddress: string, nftId: number) {
     // Verify user owns the NFT
     const owner = await nftContract.ownerOf(nftId);
     if (owner.toLowerCase() !== userAddress.toLowerCase()) {
-        throw new Error('Usuario no es dueño del NFT');
+        throw new Error('User does not own this NFT');
     }
 
     // Burn NFT (only merchant can burn)
@@ -118,6 +118,6 @@ export async function burnNFT(userAddress: string, nftId: number) {
     return {
         success: true,
         txHash: tx.hash,
-        message: 'NFT quemado exitosamente'
+        message: 'NFT burned successfully'
     };
 }
